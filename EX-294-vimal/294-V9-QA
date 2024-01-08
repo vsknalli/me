@@ -147,6 +147,9 @@ Solutions:
       state: latest
     when: inventory_hostname in groups['dev'] 
 
+Note: In the above package.yaml playbook we are using magical variable 
+      To view all magical variables # ansible localhost -m debug -a "var=vars" This magical variable is created for our localhost sicne defining inventory host is not required.
+
 ============================================================================================
 
 
