@@ -11,6 +11,42 @@ Create a configuration file called /home/catherine/ansible/ansible.cfg so that
 The host inventory file is /home/catherine/ansible/inventory 
 The default content collection directory is /home/catherine/ansible/mycollection
 The default roles directory is /home/catherine/ansible/roles
+Solutions:
+==========
+
+# cd /home/catherine/ansible
+# yum install ansible-core 
+# vi inventory
+[dev]
+node01
+
+[test]
+node02
+
+[prod]
+node[03:04]
+
+[balancers]
+node05
+
+[webservers:children]
+prod
+
+To validate the inventory file
+# ansible all -i inventory --list-hosts
+
+# vi ansible.cfg
+
+inventory -- shold be line approx 137 
+hostkey_checking -- line approx 319 
+become_user= jack
+collection -- line approx  57 
+role -- line approx 224 
+
+
+
+
+
 
 Questions-2)
 	Install a collection
@@ -18,6 +54,17 @@ Install the following collection artifacts available from http:<> to control.sec
 	redhat-rhel_system_role.1.16.2.tar.gz
 	ansible-posix-1.4.0.tar.gz
 	community-general-4.3.0.tar.gz
+
+Solutions:
+----------
+	# wget 
+	scp ansible-posix-1.5.4.tar.gz community-general-8.2.0.tar.gz root@192.168.56.70:/tmp
+	# ansible-galaxy collection install ansible-posix-1.5.4.tar.gz -p /home/catherine/ansible/roles
+	# ansible-galaxy collection list
+	# ansible-galaxy collection nstall community-general-8.2.0.tar.gz -p /home/catherine/ansible/mycollection 
+	# yum install rhel-system-roles
+
+
 
 Qustions-3)
 	Create and run ansible-playbook , As a system administrator , you will need to install softares on the managed nodes
@@ -40,7 +87,9 @@ AppStream:
         gpgcheck: NO
         enabled: yes
 
-
+Solutions:
+----------
+	
 
 
 
