@@ -46,9 +46,7 @@ become_user= jack
 collection -- line approx  57 
 role -- line approx 224 
 
-
-
-
+============================================================================================
 
 
 Questions-2)
@@ -67,6 +65,8 @@ Solutions:
 	# ansible-galaxy collection nstall community-general-8.2.0.tar.gz -p /home/catherine/ansible/mycollection 
 	# yum install rhel-system-roles
 
+
+============================================================================================
 
 Qustions-3)
 	Create and run ansible-playbook , As a system administrator , you will need to install softares on the managed nodes
@@ -109,6 +109,49 @@ Solutions:
         gpgcheck: no
         enabled: yes
 	
+============================================================================================
+
+Question-04)
+	Create a playbook called /home/catherine/ansible/package.yaml 
+	- Install php and mariadb on /dev/, test, and prod hostgroups
+	- Install RPM Development Tools pacage on dev hostgroup
+	- Update all packages to latest versions on hosts in dev hostgroup
+
+Solutions:
+----------
+- hosts: all
+  become: true 
+  vars:
+    pkgs:
+      - php
+      - mariadb
+
+  tasks:
+  - name: Installed packages
+    package:
+      name: "{{ iteam }}"
+      state: present
+
+    loop: "{{ pkgs }"
+    when: inventory_hostname in groups['dev'] or inventory_hostname in group['test'] or inventory_hostname in group['prod']
+
+  - name: Installed Development Tools Packages
+    package:
+      name: "@RPM Development Tools"
+      state: present
+    when: inventory_hostname in groups['dev'] 
+
+  - name: "Update all Packages"
+    package:
+      name: "*"
+      state: latest
+    when: inventory_hostname in groups['dev'] 
+
+============================================================================================
+
+
+
+
 
 
 
