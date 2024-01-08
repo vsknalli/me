@@ -1,0 +1,20 @@
+Question-1)
+	Install configure Ansible
+Install and configure Ansible on control node control.sector1.example.com as 
+follows: Install the required packages
+ Create a static inventory file called /home/catherince/ansible/inventory so that 
+ node1 is a member of dev host group 
+ node2 is a member of test host group 
+ node3 and node4 are member of prod host group 
+ The prod group is a member of the webservers host group 
+Create a configuration file called /home/catherine/ansible/ansible.cfg so that 
+The host inventory file is /home/catherine/ansible/inventory 
+The default content collection directory is /home/catherine/ansible/mycollection
+The default roles directory is /home/catherine/ansible/roles
+
+Questions-2)
+	Install a collection
+Install the following collection artifacts available from http:<> to control.sector1.example.com as the user cathrine
+	redhat-rhel_system_role.1.16.2.tar.gz
+	ansible-posix-1.4.0.tar.gz
+	community-general-4.3.0.tar.gz
