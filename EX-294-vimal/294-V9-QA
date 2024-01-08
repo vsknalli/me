@@ -18,3 +18,33 @@ Install the following collection artifacts available from http:<> to control.sec
 	redhat-rhel_system_role.1.16.2.tar.gz
 	ansible-posix-1.4.0.tar.gz
 	community-general-4.3.0.tar.gz
+
+Qustions-3)
+	Create and run ansible-playbook , As a system administrator , you will need to install softares on the managed nodes
+Note: Need to create 2 repo BaseOS,AppStream in managed node side.
+
+BaseOS:
+------
+	name: baseos
+	URL: ftp:///ISO/BaseOS
+	description: BaseOS
+	gpgcheck: NO
+	enabled: yes
+
+AppStream:
+-----------
+	
+        name: AppStream 
+        URL: ftp:///ISO/AppsStream
+        description: AppStream 
+        gpgcheck: NO
+        enabled: yes
+
+
+
+
+
+
+
+
+
