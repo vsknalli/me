@@ -16,6 +16,9 @@ Solutions:
 
 # cd /home/catherine/ansible
 # yum install ansible-core 
+# yum install ansible-navigator or # pip3 install ansible-navigator
+[ subscription-manager repos --enable ansible-automation-platform-2.3-for-rhel-9-x86_64-rpms- which allows to install navigator]
+
 # vi inventory
 [dev]
 node01
@@ -65,7 +68,6 @@ Solutions:
 	# yum install rhel-system-roles
 
 
-
 Qustions-3)
 	Create and run ansible-playbook , As a system administrator , you will need to install softares on the managed nodes
 Note: Need to create 2 repo BaseOS,AppStream in managed node side.
@@ -89,6 +91,23 @@ AppStream:
 
 Solutions:
 ----------
+- hosts: all 
+  become: yes
+  tasks:
+  - yum_repository:
+        name: "baseos" 
+        description: "baseos" 
+        baseurl: file:///ISO/BaseOS 
+        gpgcheck: no
+        enabled: yes 
+
+
+  - yum_repository:
+        name: "AppStream"
+        description: "AppStream"
+        baseurl: file:///ISO/AppStream  
+        gpgcheck: no
+        enabled: yes
 	
 
 
