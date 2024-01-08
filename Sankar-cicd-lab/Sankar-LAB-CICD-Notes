@@ -1,0 +1,235 @@
+1) Integrate Git with Jenkins
+==============================
+
+We need to install git on jenkins server:
+-----------------------------------------
+in jenkins server # yum install git -y	
+# git --version
+
+
+We need to install github plugins on jenkins-GUI:
+------------------------------------------------
+Manage Jenkins--> Manage plugins --> Available --> search GitHub --Install without reboot
+
+Configure GIt on Jenkin GUI:
+----------------------------
+Manage Jenkins --> Global Tool Configuration --> Name and Path to Git Excecutable 
+
+
+2) How to pull the code from GitHub:
+==================================== 
+My code is available in vsknalli in "NewHelloworld"
+New Jenkinsjob-->
+1)Jobname: Pull code from jenkins
+2)Description: Pull code from jenkins 
+3) Source Code Management: Git - <PathURL>
+Note: in jenkins servers /var/lib/jenkins/workspace it will create one folder with job name and copied all the content from github to jenkins server workspace directory...!!! 
+
+3) Integrate Maven with Jenkins:
+================================
+1) Setup Maven on jenkins: 
+	wget Download apache Maven in /opt
+	tar -zxvf apache_maven.tar.gx
+	mv apache_maven maven
+
+2) Need to setup Environment Variables
+	JAVA_HOME, M2, M2_HOME
+--------------------------------------------------
+vi ~/.bash_profile
+
+JAVA_HOME=/usr/lib/jvm/java-11-openjdk-11.0.21.0.9-2.el9.x86_64/
+M2=/opt/maven/bin	
+M2_HOME=/opt/maven
+
+PATH=$PATH:$HOME/bin:$JAVA_HOME:$M2:$M2_HOME
+
+export PATH
+
+To validate: echo $PATH
+--------------------------------------------------
+3) Install Maven Plugins:
+	ManageJenkins-> Manage Plugin -> search Maven Integration and install 
+4) Configure Maven and Java:
+	Manage Jenkins -> Global Tool --> Go to Maven remove install automatically and provide the name and exe path
+	Manage Jenkins -> Global Tool --> Go to JDK remove install automatically & privide the name and jdk path
+ 
+Lession: 13
+============
+Build a java project using Jenkins:
+===================================
+New Item--> Maven project -> Enter Maven project Name
+Description: First maven project 
+Source COde: https://github.com/vsknalli/New-Hello-world.git
+Build: Goal : clean install 
+Apply and Save 
+
+Setup TOMCAT server:
+=====================
+	1) setup linux box
+	2) Install java because tomcat runs on topof java
+	3) Configure Tomcat
+	4) Start Tomcat server
+	5) Access Web UI on port 8080
+Refer Simple devop project of GitHub
+
+Setup Docker Host:
+====================
+	1) setup linux box
+	2) Install docker
+	3) start docker service 
+	4) Basic docker command
+Create a Tomcat Container:
+==========================
+	Go to the DockerHub website and search Tomcat and select the official image
+# docker pull tomcat:latest 
+
+To create a container of this images
+# docker run -d --name tomcat-container -p 8081:8080 tomcat:latest
+
+# docker ps 
+
+We need to enable the port on firewall level
+
+To list all the open ports, you can use:
+#  netstat -tuln
+
+# Open a port (Example: 8080 TCP)
+firewall-cmd --zone=public --add-port=8080/tcp --permanent
+
+# Reload the firewall to apply the changes
+firewall-cmd --reload
+
+# Verify that the port has been opened
+firewall-cmd --list-ports
+
+HTTP Status 404 – Not Found----This error means we could able to access it from the broswser but not reaching proberly
+that is the reason which means we could not find the page we could request....This is Known Issue.
+
+
+FIXING TOMCAT CONTAINER ISSUE:
+==============================
+Fist login tothe container 
+# docker exec -it tomcat-container /bin/bash
+> cp -R webaps.dist/*  webapps/
+
+Now if we refresh the URL tomcat home page open.
+
+What ever the config changes we have done is within the container, its not going to effect in image level.
+
+to comeout this this issue we can create the image form Dockerfile ,pull the image from DockerHub and we will do
+some customization like copying files from webapp.dist to webapps foldr and create the images so that 
+the changes will be captured in ths image, if we create container with this image we wont get 404 Error.
+
+
+Create First Dockerfile :
+=========================
+vi Dockerfile
+FROM tomcat
+#cp -R webapps.dist/* webapps   
+# The tomcat image home directory located in /usr/local/tomcat 
+cp -R /usr/local/tomcat/webapps.dist/* /usr/local/tomcat/webapps
+
+
+Now we need to build image with this customized Dockerfile
+
+# docker build -t demotomcat .
+
+# docker images
+
+Now we need to create a container 
+
+# docker run -d --name demotomcat-container -p 8082:8080 demotomcat 
+
+
+INTEGRATE DOCKER WITH JENKINS:
+==============================
+	1.To integrate docker with jenkins first we need to create a deticated user of course we do have devops user 
+	2.Install "Publish-Over-Ssh" plugin
+Now we need to creat devops user and add the user to dockergroup 
+dockerhost:
+useradd devops
+passwd devops
+usermod -aG  docker devops
+
+Need to verify password login is enabled in /etc/ssh/sshd_config file and restart sshd service 
+dockerhost:
+cd /opt
+sudo mkdir devops
+sudo chown devops:devops devops/
+
+
+Now we need to integrate docker with jenkins for that ManageJenkins-> plugins-> PublishOverSSH
+we need to configure docker host on jenkins for that ManageJenkins-> configure system -> PlublishOVerssh 
+Add server -server name - username(devops) -use password password authenticaiton->password - validate the connection 
+
+
+00025 Jenkins_Job_to_Build_and_Copy_Artifacts_on_to_Docker_Host:
+================================================================
+	In this section we are going to see 
+	1.Pull the code from GitHub
+	2.Build with the Hlep of Maven
+	3.Copy the artifact to the dockerHost 
+
+New job --> Build artifact over docker host
+scm: new Hello world
+cron: yes
+Build: clean install
+Post-Build-Action:
+Select : Send Build Artifacts over ssh
+select : select the corrent ssh-server (dockerhost)
+source file: **/*.war
+Remove prefix: webapps/target 
+Remote directory: //opt//devops
+
+After sucessfull completion of this job it just copied the artifact to docker host to the remote directory /opt/devops 
+just .war artifact file thats all.
+But we requirement is to create container , so we need Dockerfile ot create image 
+Need he instruction to add the .war file while creating the image
+
+vi Dockerfile
+FROM tomcat:latest
+cp -R /usr/local/tomcat/webapps.dist/* /usr/local/tomcat/webapps
+copy ./*.war /usr/local/tomcat/webapps
+
+Manual creation image & container:
+
+# docker build -t tomcat:v1 .
+# docker run -d --name tomcatv1 -p 8083:8080 tomcat:v1
+
+The next we need to create the imaeg and container automatically by jenkins for that we need to do the below 
+------------------------------------------------------------------------------------------------------------
+This is the same job in the above 
+
+New job --> Build artifact over docker host
+scm: new Hello world
+cron: yes
+Build: clean install
+Post-Build-Action:
+Select : Send Build Artifacts over ssh
+select : select the corrent ssh-server (dockerhost)
+source file: **/*.war
+Remove prefix: webapps/target
+Remote directory: //opt//devops
+Exec Commands:
+ cd /opt/devops;
+ docker build -t regapp:v1 .
+ docker run -d --name registerapp -p 8085:8080 regapp:v1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
