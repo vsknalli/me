@@ -152,8 +152,33 @@ Note: In the above package.yaml playbook we are using magical variable
 
 ============================================================================================
 
+Question-05)
+	Unsing a selinux role create a selinux.yml playbook to configure on all managed hosts to set the default target as permissive.
+	
+Solutions:
+	# ansible-galaxy role install linux-system-roles.selinux -p roles/
+	# vim playbook.yaml
+        # To validate the role installation 
+	# ansible-galaxy role list
+
+[catherine@ansible-c ansible]$ vim  selinux.yml
+- hosts: all
+  roles:
+    - selinux_state: enforcing  
+    - selinux_policy: targeted   
+  become: True
+  roles:
+    - role: linux-system-roles.selinux 
+# ansible-playbook selinux.yml
+
+============================================================================================
 
 
+
+
+ 	
+
+	
 
 
 
