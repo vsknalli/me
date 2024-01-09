@@ -173,6 +173,36 @@ Solutions:
 
 ============================================================================================
 
+Question-06)
+	Create a role called apache in /home/catherine/ansible/roles with the following requirements
+  - The httpd package is installed, enabled on boot, and started
+  - The firewall is enable and running with a rule to allow access to the web server
+  - A template file index.html.j2 exists(You have to create this file) and is used to crate a file /var/www/html/index.html
+    with the following output:
+
+	Welcome to HOSTNAME on IPADDRESS
+  - Where hostname is fully qualified domain name of the managed node and IPADDRES is the IP address of the managed nodes
+  - Create a playbook called /home/catherine/ansible/newrole.yml that uses that role as follows
+  - The playboo runs on hosts in the webservers hostgroup.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
