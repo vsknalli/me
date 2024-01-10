@@ -187,6 +187,70 @@ Question-06)
 
 
 
+[catherine@ansible-c ansible]$ cat  newrole.yml 
+- hosts: webservers
+  become: true
+  roles:
+    - role: apache
+============
+vi roles/apache/tasks/main.yml
+
+---
+# tasks file for apache
+#
+- package:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ pkgs }}"
+
+- service:
+    name: "{{ item }}"
+    state: started
+    enabled: yes
+  loop: "{{ pkgs }}"
+
+- ansible.posix.firewalld:
+    service: "{{ item }}"
+    immediate: true
+    state: enabled
+    permanent: true
+  loop: "{{ svcs }}"
+
+- ansible.builtin.template:
+    src: "index.html.j2"
+    dest: "/var/www/html/index.html"
+=================
+
+roles/apache/vars/main.yml
+
+---
+# vars file for apache
+#
+pkgs:
+  - httpd
+  - firewalld
+
+svcs:
+  - http
+  - https
+~            
+====================
+
+roles/apache/templates/index.html.j2
+Welcome to  {{ ansible_facts['fqdn'] }} on {{ ansible_facts['default_ipv4']['address'] }}
+
+=============================================================================================================
+
+07-Question)
+------------
+	Use Ansible-galaxy with a requirement file called /home/catherine/ansible/roles/requirement.yml to download
+install roles to /home/admin/ansible/roles from the followin URL 
+
+	----http://classroom.example.com/content/examfun.tar.gx
+ 	----The name of this role should be balancer
+	
+	---http://classroom.example.com/content/examfun.tar.gx
+	---The name of this role should be phpinfo
 
 
 
@@ -195,6 +259,9 @@ Question-06)
 
 
 
+A
+A
+		
 
 
 
