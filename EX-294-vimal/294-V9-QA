@@ -338,6 +338,37 @@ ansible-vault view vault.yml
 
 =========================================================================================================
 
+Question-10)
+============	
+	Generate a Host File:
+- Download an initial template file called hosts.j2 from 
+http://classroom.example.com/content/hosts.j2/ to /home/admin/ansible
+Complete the template so that it can be used to generate a file with a line for each inventory host in the same format 
+as /etc/hosts
+
+- Create a playbook called gen_hosts.yml that uses this template to generate the file /etc/myhosts on hosts in the dev 
+hostgroup 
+
+- When complete the file /etc/myhosts on hosts in the dev hostgroup should have a line for each management host 
+
+127.0.0.1localhostlocalhost.localdomainlocalhost4localhost4.localdomain4
+::1localhostlocalhost.localdomainlocalhost6localhost6.localdomain6
+
+192.168.10.xnode1.example.comnode1
+192.168.10.ynode2.example.comnode2
+192.168.10.znode3.example.comnode3
+192.168.10.anode4.example.comnode4
+192.168.10.bnode5.example.comnode5
+
+Solution:
+=========
+
+
+
+
+
+
+
 
 
 
