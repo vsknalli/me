@@ -362,9 +362,36 @@ hostgroup
 
 Solution:
 =========
+[catherine@ansible-c ansible]$ cat gen_hosts.yml 
+- hosts: all
+  become: yes 
+  tasks: []
+
+- hosts: all
+  tasks: 
+     - template:
+         src: "/home/catherine/ansible/hosts.j2"
+         dest: "/tmp/myhosts"
 
 
+=============================================================================================================================
 
+Question-11)
+============
+	Create a playbook called hwreport.yml that produces on output file called /root/hwreport.txt on all managednodes
+with the following information:
+	- Inventory hostname
+	- Total memory in MB
+	- BIOS version
+	- Size of disk VDA
+	- Size of disk VDB
+Eachline of the output contains a single key:value pair 
+
+your playbook should:
+	- Downlod the file hwreport.empty from the URL 
+	- http://classroom.example.com/content/hwreport.empty and save it as /root/hwreport.txt
+	- Modify with the correct values: 
+	Note: if a hardware does not exist, the associated value should be set to NULL
 
 
 
