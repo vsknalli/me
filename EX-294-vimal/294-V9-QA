@@ -274,6 +274,9 @@ Special permissions: Set Group ID
 Symbolic link /var/www/html/webdev /webdev 
 Create the file /webdev/index.html with the single line of the text that reads: Development 
 
+Solutions
+==========
+
 [catherine@ansible-c ansible]$ cat web.yml 
 - hosts: dev
   become: yes
@@ -311,48 +314,19 @@ Create the file /webdev/index.html with the single line of the text that reads: 
       group: "webdev"
 ==================================================================================================
 
+Qustion-09)
+===========
+	Create an Ansible Vault to store user passwords as follows
+The name of the vault is vault.yaml
+The vault contains two variables as follws:
+	- dev_pass with value wakennym
+	- mgr_pass with value rocky 
+The password to encrypt and decrypt the valut is atenorth 
+The password stored in the file /home/admin/ansible/password.txt 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-- hosts: localhost
-  become: true
-  roles:
-    - role: balancers
-
-- hosts: 
-
-
-
-
-
-
-		
-
-
-
-
-
-
-
-
-
-
-
- 	
-
-	
 
 
 
