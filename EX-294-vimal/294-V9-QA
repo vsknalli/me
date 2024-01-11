@@ -252,6 +252,64 @@ install roles to /home/admin/ansible/roles from the followin URL
 	---http://classroom.example.com/content/examfun.tar.gx
 	---The name of this role should be phpinfo
 
+Solutions:
+=========
+- src: https://github.com/mdklatt/ansible-tmpdir-role/archive/v0.1.0.tar.gz
+  name: balancer 
+
+- src: https://github.com/mdklatt/ansible-tmpdir-role/archive/v0.1.0.tar.gz
+  name: phpinfo
+
+ansible-galaxyinstall-rroles/requirement.yml -proles
+# pwd before running the command must be /home/Catherine/ansible
+
+=====================================================================================================================
+Qustion-08)
+	Create a playbook called web.yml as follows
+The playbook runs on managed nodes in the dev hostgroup
+Create a directory /webdev with the following requirements:
+	- membership in the webdev group 
+Regular permissions: Owner=read+write+execute, group=read+write+execute, other=read+execute
+Special permissions: Set Group ID 
+Symbolic link /var/www/html/webdev /webdev 
+Create the file /webdev/index.html with the single line of the text that reads: Development 
+
+[catherine@ansible-c ansible]$ cat web.yml 
+- hosts: dev
+  become: yes
+  tasks:
+  - name: Ensure group "webdev" group  exists
+    ansible.builtin.group:
+      name: "webdev"
+      state: present
+
+  - name: Change file ownership, group and permissions
+    ansible.builtin.file:
+      path: "/webdev"
+      state: directory
+      owner: "apache" 
+      group: "webdev" 
+      mode: 02775
+      setype: "httpd_sys_content_t"
+
+  - name: Create a symbolic link
+    ansible.builtin.file:
+      src: "/webdev" 
+      dest: "/var/www/html/webdev" 
+      state: link
+      mode: 02775
+      setype: "httpd_sys_content_t"
+      owner: "apache"
+
+  - name: Copy using inline content
+    ansible.builtin.copy:
+      content: 'Development'
+      dest: "/webdev/index.html"
+      setype: "httpd_sys_content_t"
+      owner: "apache"
+      mode: "0640"
+      group: "webdev"
+==================================================================================================
 
 
 
@@ -259,8 +317,27 @@ install roles to /home/admin/ansible/roles from the followin URL
 
 
 
-A
-A
+
+
+
+
+
+
+
+
+
+- hosts: localhost
+  become: true
+  roles:
+    - role: balancers
+
+- hosts: 
+
+
+
+
+
+
 		
 
 
