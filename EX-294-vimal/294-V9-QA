@@ -324,8 +324,19 @@ The vault contains two variables as follws:
 The password to encrypt and decrypt the valut is atenorth 
 The password stored in the file /home/admin/ansible/password.txt 
 
+Solutions:
+==========
+vi password.txt
+atenorth
 
+ansible-vault create vault.yml --vault-password-file=password.txt
 
+chmod0600password.tx
+
+To view encreypted file:
+ansible-vault view vault.yml
+
+=========================================================================================================
 
 
 
