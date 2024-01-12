@@ -1,0 +1,43 @@
+Sr. no.	Desired skills for Linux (L3)
+1	What are different types of Raid ?
+Raid 1 - concatenation and stripping
+Raid 0 - Mirroring
+RAID 5 - Stripping with parity
+
+2	Explain how to configure new repositories or enable/disable existing repositories.
+
+vi /etc/yum.repos.d/epel.repo
+ enabled=1 to 0 
+enable=1 => TO enable
+enable=0 => To disable
+
+
+3	How to configure logrotate to zip and remove old log files ?
+truncate -5 0 /path /logfile.log
+
+
+4	How to recover system in case of Kernel Panic ?
+Boot the system into single user mode and login via root login credentials
+cd /boot
+if initrams.img is available , it must be correpted 
+Now we need to check and find the kernel version
+# mkinitrd initramfs -kerlel_version.img kernel_version
+Boot the machine
+
+
+
+5	How to proceed in case of hardware failure / amber alerts on hardware / server ?
+6	How to repair a corrupted filesystem ?
+fsck.gfs2 /dev/testvg/testlv
+
+ext4 filesystem:
+	sudo fsck.ext4 -p /dev/sdb1
+
+
+
+
+
+
+
+
+
