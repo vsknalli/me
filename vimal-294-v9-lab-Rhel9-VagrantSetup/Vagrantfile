@@ -75,6 +75,57 @@ Vagrant.configure("2") do |config|
      end
   end
 
+  config.vm.define "nfsserver" do |nfsserver|
+    nfsserver.vm.box = "generic/rhel9"
+        nfsserver.vm.network "private_network", ip: "192.168.56.78"
+    config.vm.provider "virtualbox" do |v|
+        v.memory = 512
+        v.cpus = 1
+     end
+  end
 
+  config.vm.define "nfs-client01" do |nisserver|
+    nisserver.vm.box = "generic/rhel9"
+        nisserver.vm.network "private_network", ip: "192.168.56.79"
+    config.vm.provider "virtualbox" do |v|
+        v.memory = 512
+        v.cpus = 1
+     end
+  end
+
+  config.vm.define "nfs-client02" do |nisserver|
+    nisserver.vm.box = "generic/rhel9"
+        nisserver.vm.network "private_network", ip: "192.168.56.80"
+    config.vm.provider "virtualbox" do |v|
+        v.memory = 512
+        v.cpus = 1
+     end
+  end
+
+  config.vm.define "nisserver-master" do |nisserver|
+    nisserver.vm.box = "generic/rhel9"
+        nisserver.vm.network "private_network", ip: "192.168.56.81"
+    config.vm.provider "virtualbox" do |v|
+        v.memory = 512
+        v.cpus = 1
+     end
+  end
+
+  config.vm.define "nisserver-slave" do |nisserver|
+    nisserver.vm.box = "generic/rhel9"
+        nisserver.vm.network "private_network", ip: "192.168.56.82"
+    config.vm.provider "virtualbox" do |v|
+        v.memory = 512
+        v.cpus = 1
+     end
+  end
+
+  config.vm.define "nisserver-client" do |nisserver|
+    nisserver.vm.box = "generic/rhel9"
+        nisserver.vm.network "private_network", ip: "192.168.56.83"
+    config.vm.provider "virtualbox" do |v|
+        v.memory = 512
+        v.cpus = 1
+     end
+  end
 end
-
