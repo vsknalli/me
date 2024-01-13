@@ -1,3 +1,18 @@
+
+nmcli connection show
+
+sudo nmcli connection modify eth0 ipv4.addresses 192.168.56.99/24 ipv4.gateway 192.168.56.2
+
 nmcli connection modify Connection1 ipv4.addresses 192.168.100.70/24
 
 nmcli connection modify eth0 ipv4.routes "192.168.56.0"
+
+ sudo ifconfig <interface_name> <new_ip_address> netmask <subnet_mask>
+
+sudo systemctl restart NetworkManager.service
+
+ sudo service NetworkManager restart
+
+sudo systemctl restart NetworkManager.service
+
+sudo nmcli connection reload
