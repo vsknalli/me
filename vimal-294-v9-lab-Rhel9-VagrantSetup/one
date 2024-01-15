@@ -36,7 +36,8 @@ ext4 filesystem:
 
 
 
-
+subscription-manager attach --pool=2c94e7b18c82c5c7018cd8c08a917258
+subscription-manager attach --pool2c94e7b18c82c5c7018cd8c08a887256
 
 
 
