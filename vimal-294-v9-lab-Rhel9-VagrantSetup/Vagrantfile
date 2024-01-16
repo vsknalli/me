@@ -166,16 +166,16 @@ Vagrant.configure("2") do |config|
 
 
   config.vm.define "kmaster" do |kmaster|
-    kmaster.vm.box = "generic/rhel9"
+    kmaster.vm.box = "ubuntu/focal64"
         kmaster.vm.network "private_network", ip: "192.168.56.84"
     config.vm.provider "virtualbox" do |v|
         v.memory = 2048 
-        v.cpus = 1
+        v.cpus = 2
      end
   end
 
   config.vm.define "kworker01" do |kworker01|
-    kworker01.vm.box = "generic/rhel9"
+    kworker01.vm.box = "ubuntu/focal64"
         kworker01.vm.network "private_network", ip: "192.168.56.85"
     config.vm.provider "virtualbox" do |v|
         v.memory = 2048 
@@ -184,7 +184,7 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.define "kworker02" do |kworker02|
-    kworker02.vm.box = "generic/rhel9"
+    kworker02.vm.box = "ubuntu/focal64"
         kworker02.vm.network "private_network", ip: "192.168.56.86"
     config.vm.provider "virtualbox" do |v|
         v.memory = 2048 
@@ -193,7 +193,7 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.define "kworker03" do |kworker03|
-    kworker03.vm.box = "generic/rhel9"
+    kworker03.vm.box = "ubuntu/focal64"
         kworker03.vm.network "private_network", ip: "192.168.56.87"
     config.vm.provider "virtualbox" do |v|
         v.memory = 2048 

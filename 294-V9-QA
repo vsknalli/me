@@ -392,15 +392,3 @@ your playbook should:
 	- http://classroom.example.com/content/hwreport.empty and save it as /root/hwreport.txt
 	- Modify with the correct values: 
 	Note: if a hardware does not exist, the associated value should be set to NULL
-
-
-
-
-
-
-
-
-
-
-
-
