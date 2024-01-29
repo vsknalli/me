@@ -1,0 +1,408 @@
+Question-1)
+	Install configure Ansible
+Install and configure Ansible on control node control.sector1.example.com as 
+follows: Install the required packages
+ Create a static inventory file called /home/catherince/ansible/inventory so that 
+ node1 is a member of dev host group 
+ node2 is a member of test host group 
+ node3 and node4 are member of prod host group 
+ The prod group is a member of the webservers host group 
+Create a configuration file called /home/catherine/ansible/ansible.cfg so that 
+The host inventory file is /home/catherine/ansible/inventory 
+The default content collection directory is /home/catherine/ansible/mycollection
+The default roles directory is /home/catherine/ansible/roles
+Solutions:
+==========
+
+# cd /home/catherine/ansible
+# yum install ansible-core 
+# yum install ansible-navigator or # pip3 install ansible-navigator
+[ subscription-manager repos --enable ansible-automation-platform-2.3-for-rhel-9-x86_64-rpms- which allows to install navigator]
+
+# vi inventory
+[dev]
+node01
+
+[test]
+node02
+
+[prod]
+node[03:04]
+
+[balancers]
+node05
+
+[webservers:children]
+prod
+
+To validate the inventory file
+# ansible all -i inventory --list-hosts
+
+# vi ansible.cfg
+
+inventory -- shold be line approx 137 
+hostkey_checking -- line approx 319 
+become_user= jack
+collection -- line approx  57 
+role -- line approx 224 
+
+============================================================================================
+
+
+Questions-2)
+	Install a collection
+Install the following collection artifacts available from http:<> to control.sector1.example.com as the user cathrine
+	redhat-rhel_system_role.1.16.2.tar.gz
+	ansible-posix-1.4.0.tar.gz
+	community-general-4.3.0.tar.gz
+
+Solutions:
+----------
+	# wget 
+	scp ansible-posix-1.5.4.tar.gz community-general-8.2.0.tar.gz root@192.168.56.70:/tmp
+	# ansible-galaxy collection install ansible-posix-1.5.4.tar.gz -p /home/catherine/ansible/roles
+	# ansible-galaxy collection list
+	# ansible-galaxy collection nstall community-general-8.2.0.tar.gz -p /home/catherine/ansible/mycollection 
+	# yum install rhel-system-roles
+
+
+============================================================================================
+
+Qustions-3)
+	Create and run ansible-playbook , As a system administrator , you will need to install softares on the managed nodes
+Note: Need to create 2 repo BaseOS,AppStream in managed node side.
+
+BaseOS:
+------
+	name: baseos
+	URL: ftp:///ISO/BaseOS
+	description: BaseOS
+	gpgcheck: NO
+	enabled: yes
+
+AppStream:
+-----------
+	
+        name: AppStream 
+        URL: ftp:///ISO/AppsStream
+        description: AppStream 
+        gpgcheck: NO
+        enabled: yes
+
+Solutions:
+----------
+- hosts: all 
+  become: yes
+  tasks:
+  - yum_repository:
+        name: "baseos" 
+        description: "baseos" 
+        baseurl: file:///ISO/BaseOS 
+        gpgcheck: no
+        enabled: yes 
+
+
+  - yum_repository:
+        name: "AppStream"
+        description: "AppStream"
+        baseurl: file:///ISO/AppStream  
+        gpgcheck: no
+        enabled: yes
+	
+============================================================================================
+
+Question-04)
+	Create a playbook called /home/catherine/ansible/package.yaml 
+	- Install php and mariadb on /dev/, test, and prod hostgroups
+	- Install RPM Development Tools pacage on dev hostgroup
+	- Update all packages to latest versions on hosts in dev hostgroup
+
+Solutions:
+----------
+- hosts: all
+  become: true 
+  vars:
+    pkgs:
+      - php
+      - mariadb
+
+  tasks:
+  - name: Installed packages
+    package:
+      name: "{{ iteam }}"
+      state: present
+
+    loop: "{{ pkgs }"
+    when: inventory_hostname in groups['dev'] or inventory_hostname in group['test'] or inventory_hostname in group['prod']
+
+  - name: Installed Development Tools Packages
+    package:
+      name: "@RPM Development Tools"
+      state: present
+    when: inventory_hostname in groups['dev'] 
+
+  - name: "Update all Packages"
+    package:
+      name: "*"
+      state: latest
+    when: inventory_hostname in groups['dev'] 
+
+Note: In the above package.yaml playbook we are using magical variable 
+      To view all magical variables # ansible localhost -m debug -a "var=vars" This magical variable is created for our localhost sicne defining inventory host is not required.
+
+============================================================================================
+
+Question-05)
+	Unsing a selinux role create a selinux.yml playbook to configure on all managed hosts to set the default target as permissive.
+	
+Solutions:
+	# ansible-galaxy role install linux-system-roles.selinux -p roles/
+	# vim playbook.yaml
+        # To validate the role installation 
+	# ansible-galaxy role list
+
+[catherine@ansible-c ansible]$ vim  selinux.yml
+- hosts: all
+  roles:
+    - selinux_state: enforcing  
+    - selinux_policy: targeted   
+  become: True
+  roles:
+    - role: linux-system-roles.selinux 
+# ansible-playbook selinux.yml
+
+============================================================================================
+
+Question-06)
+	Create a role called apache in /home/catherine/ansible/roles with the following requirements
+  - The httpd package is installed, enabled on boot, and started
+  - The firewall is enable and running with a rule to allow access to the web server
+  - A template file index.html.j2 exists(You have to create this file) and is used to crate a file /var/www/html/index.html
+    with the following output:
+
+	Welcome to HOSTNAME on IPADDRESS
+  - Where hostname is fully qualified domain name of the managed node and IPADDRES is the IP address of the managed nodes
+  - Create a playbook called /home/catherine/ansible/newrole.yml that uses that role as follows
+  - The playboo runs on hosts in the webservers hostgroup.
+
+
+
+[catherine@ansible-c ansible]$ cat  newrole.yml 
+- hosts: webservers
+  become: true
+  roles:
+    - role: apache
+============
+vi roles/apache/tasks/main.yml
+
+---
+# tasks file for apache
+#
+- package:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ pkgs }}"
+
+- service:
+    name: "{{ item }}"
+    state: started
+    enabled: yes
+  loop: "{{ pkgs }}"
+
+- ansible.posix.firewalld:
+    service: "{{ item }}"
+    immediate: true
+    state: enabled
+    permanent: true
+  loop: "{{ svcs }}"
+
+- ansible.builtin.template:
+    src: "index.html.j2"
+    dest: "/var/www/html/index.html"
+=================
+
+roles/apache/vars/main.yml
+
+---
+# vars file for apache
+#
+pkgs:
+  - httpd
+  - firewalld
+
+svcs:
+  - http
+  - https
+~            
+====================
+
+roles/apache/templates/index.html.j2
+Welcome to  {{ ansible_facts['fqdn'] }} on {{ ansible_facts['default_ipv4']['address'] }}
+
+=============================================================================================================
+
+07-Question)
+------------
+	Use Ansible-galaxy with a requirement file called /home/catherine/ansible/roles/requirement.yml to download
+install roles to /home/admin/ansible/roles from the followin URL 
+
+	----http://classroom.example.com/content/examfun.tar.gx
+ 	----The name of this role should be balancer
+	
+	---http://classroom.example.com/content/examfun.tar.gx
+	---The name of this role should be phpinfo
+
+Solutions:
+=========
+- src: https://github.com/mdklatt/ansible-tmpdir-role/archive/v0.1.0.tar.gz
+  name: balancer 
+
+- src: https://github.com/mdklatt/ansible-tmpdir-role/archive/v0.1.0.tar.gz
+  name: phpinfo
+
+ansible-galaxyinstall-rroles/requirement.yml -proles
+# pwd before running the command must be /home/Catherine/ansible
+
+=====================================================================================================================
+Qustion-08)
+	Create a playbook called web.yml as follows
+The playbook runs on managed nodes in the dev hostgroup
+Create a directory /webdev with the following requirements:
+	- membership in the webdev group 
+Regular permissions: Owner=read+write+execute, group=read+write+execute, other=read+execute
+Special permissions: Set Group ID 
+Symbolic link /var/www/html/webdev /webdev 
+Create the file /webdev/index.html with the single line of the text that reads: Development 
+
+Solutions
+==========
+
+[catherine@ansible-c ansible]$ cat web.yml 
+- hosts: dev
+  become: yes
+  tasks:
+  - name: Ensure group "webdev" group  exists
+    ansible.builtin.group:
+      name: "webdev"
+      state: present
+
+  - name: Change file ownership, group and permissions
+    ansible.builtin.file:
+      path: "/webdev"
+      state: directory
+      owner: "apache" 
+      group: "webdev" 
+      mode: 02775
+      setype: "httpd_sys_content_t"
+
+  - name: Create a symbolic link
+    ansible.builtin.file:
+      src: "/webdev" 
+      dest: "/var/www/html/webdev" 
+      state: link
+      mode: 02775
+      setype: "httpd_sys_content_t"
+      owner: "apache"
+
+  - name: Copy using inline content
+    ansible.builtin.copy:
+      content: 'Development'
+      dest: "/webdev/index.html"
+      setype: "httpd_sys_content_t"
+      owner: "apache"
+      mode: "0640"
+      group: "webdev"
+
+==================================================================================================
+
+Qustion-09)
+===========
+	Create an Ansible Vault to store user passwords as follows
+The name of the vault is vault.yaml
+The vault contains two variables as follws:
+	- dev_pass with value wakennym
+	- mgr_pass with value rocky 
+The password to encrypt and decrypt the valut is atenorth 
+The password stored in the file /home/admin/ansible/password.txt 
+
+Solutions:
+==========
+vi password.txt
+atenorth
+
+ansible-vault create vault.yml --vault-password-file=password.txt
+
+chmod0600password.tx
+
+To view encreypted file:
+ansible-vault view vault.yml
+	
+=========================================================================================================
+
+Question-10)
+============	
+	Generate a Host File:
+- Download an initial template file called hosts.j2 from 
+http://classroom.example.com/content/hosts.j2/ to /home/admin/ansible
+Complete the template so that it can be used to generate a file with a line for each inventory host in the same format 
+as /etc/hosts
+
+- Create a playbook called gen_hosts.yml that uses this template to generate the file /etc/myhosts on hosts in the dev 
+hostgroup	 
+
+- When complete the file /etc/myhosts on hosts in the dev hostgroup should have a line for each management host 
+
+127.0.0.1localhostlocalhost.localdomainlocalhost4localhost4.localdomain4
+::1localhostlocalhost.localdomainlocalhost6localhost6.localdomain6
+
+192.168.10.xnode1.example.comnode1
+192.168.10.ynode2.example.comnode2
+192.168.10.znode3.example.comnode3
+192.168.10.anode4.example.comnode4
+192.168.10.bnode5.example.comnode5
+
+Solution:
+=========
+
+First we need to create jinja2 expresstion for myhosts file host entry
+
+vi hosts.j2
+==================
+{%for x in groups['all']%}
+
+{{ hostvars[x] ['ansible_facts'] ['default_ipv4'] ['address'] }} {{ hostvars[x] ['ansible_facts'] ['fqdn']}} {{ hostvars[x] ['ansible_facts'] ['hostname']}}
+
+{% endfor %}
+=========================
+
+
+[catherine@ansible-c ansible]$ cat gen_hosts.yml 
+- hosts: all
+  become: yes 
+  tasks: []
+
+- hosts: all
+  tasks: 
+     - template:
+         src: "/home/catherine/ansible/hosts.j2"
+         dest: "/tmp/myhosts"
+
+
+=============================================================================================================================
+
+Question-11)
+============
+	Create a playbook called hwreport.yml that produces on output file called /root/hwreport.txt on all managednodes
+with the following information:
+	- Inventory hostname
+	- Total memory in MB
+	- BIOS version
+	- Size of disk VDA
+	- Size of disk VDB
+Eachline of the output contains a single key:value pair 
+
+your playbook should:
+	- Downlod the file hwreport.empty from the URL 
+	- http://classroom.example.com/content/hwreport.empty and save it as /root/hwreport.txt
+	- Modify with the correct values: 
+	Note: if a hardware does not exist, the associated value should be set to NULL

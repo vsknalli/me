@@ -1,0 +1,206 @@
+Vagrant.configure("2") do |config|
+
+  config.vm.define "ansibletower" do |ansibletower|
+    ansibletower.vm.box = "generic/rhel7"
+        ansibletower.vm.network "private_network", ip: "192.168.56.30"
+        ansibletower.vm.provider "virtualbox" do |vb|
+    config.vm.provider "virtualbox" do |v|
+       v.memory = 5048
+       v.cpus = 2
+    end
+   end
+  end
+
+
+  config.vm.define "jenkins" do |jenkins|
+    jenkins.vm.box = "generic/rhel9"
+        jenkins.vm.network "private_network", ip: "192.168.56.60"
+    config.vm.provider "virtualbox" do |v|
+        v.memory = 2048
+        v.cpus = 1
+     end
+  end
+
+
+  config.vm.define "docker" do |docker|
+    docker.vm.box = "generic/rhel9"
+        docker.vm.network "private_network", ip: "192.168.56.61"
+    config.vm.provider "virtualbox" do |v|
+        v.memory = 2048
+        v.cpus = 1
+     end
+  end
+
+  config.vm.define "tomcat" do |tomcat|
+    tomcat.vm.box = "generic/rhel9"
+        tomcat.vm.network "private_network", ip: "192.168.56.62"
+    config.vm.provider "virtualbox" do |v|
+        v.memory = 1048
+        v.cpus = 1
+     end
+  end
+
+
+
+  config.vm.define "ansible" do |ansible|
+    ansible.vm.box = "generic/rhel9"
+        ansible.vm.network "private_network", ip: "192.168.56.70"
+    config.vm.provider "virtualbox" do |v|
+        v.memory = 2048
+        v.cpus = 1
+     end
+  end
+
+
+  config.vm.define "node01" do |node01|
+    node01.vm.box = "generic/rhel9"
+        node01.vm.network "private_network", ip: "192.168.56.71"
+     config.vm.provider "virtualbox" do |v|
+        v.memory = 512
+        v.cpus = 1
+     end
+  end
+
+   config.vm.define "node02" do |node02|
+    node02.vm.box = "generic/rhel9"
+        node02.vm.network "private_network", ip: "192.168.56.72"
+     config.vm.provider "virtualbox" do |v|
+        v.memory = 1048
+        v.cpus = 2
+     end
+  end
+
+  config.vm.define "node03" do |node03|
+    node03.vm.box = "generic/rhel9"
+        node03.vm.network "private_network", ip: "192.168.56.73"
+     config.vm.provider "virtualbox" do |v|
+        v.memory = 1048
+        v.cpus = 1
+     end
+  end
+
+
+  config.vm.define "cent05" do |cent05|
+    cent05.vm.box = "centos/7"
+        cent05.vm.network "private_network", ip: "192.168.56.74"
+     config.vm.provider "virtualbox" do |v|
+        v.memory = 1048
+        v.cpus = 1
+     end
+  end
+
+
+  config.vm.define "upgrade" do |upgrade|
+    upgrade.vm.box = "generic/rhel7"
+#        upgrade.vm.network "public_network", ip: "192.168.56.77"
+     config.vm.provider "virtualbox" do |v|
+        v.memory = 2048
+        v.cpus = 1
+     end
+  end
+
+
+
+  config.vm.define "shell" do |shell|
+    shell.vm.box = "centos/7"
+        shell.vm.network "private_network", ip: "192.168.56.78"
+     shell.vm.provider "virtualbox" do |v|
+        v.memory = 1048
+        v.cpus = 1
+     end
+  end
+
+  config.vm.define "nfsserver" do |nfsserver|
+    nfsserver.vm.box = "generic/rhel9"
+        nfsserver.vm.network "private_network", ip: "192.168.56.79"
+    config.vm.provider "virtualbox" do |v|
+        v.memory = 512
+        v.cpus = 1
+     end
+  end
+
+  config.vm.define "nfsclient01" do |nfsclient01|
+    nfsclient01.vm.box = "generic/rhel9"
+        nfsclient01.vm.network "private_network", ip: "192.168.56.80"
+    config.vm.provider "virtualbox" do |v|
+        v.memory = 512
+        v.cpus = 1
+     end
+  end
+
+  config.vm.define "nfsclient02" do |nfsclient02|
+    nfsclient02.vm.box = "generic/rhel9"
+        nfsclient02.vm.network "private_network", ip: "192.168.56.81"
+    config.vm.provider "virtualbox" do |v|
+        v.memory = 512
+        v.cpus = 1
+     end
+  end
+
+  config.vm.define "nismaster" do |nismaster|
+    nismaster.vm.box = "generic/rhel9"
+        nismaster.vm.network "private_network", ip: "192.168.56.82"
+    config.vm.provider "virtualbox" do |v|
+        v.memory = 512
+        v.cpus = 1
+     end
+  end
+
+  config.vm.define "nisslave" do |nisslave|
+    nisslave.vm.box = "generic/rhel9"
+        nisslave.vm.network "private_network", ip: "192.168.56.83"
+    config.vm.provider "virtualbox" do |v|
+        v.memory = 512
+        v.cpus = 1
+     end
+  end
+
+  config.vm.define "nisclient" do |nisclient|
+    nisclient.vm.box = "generic/rhel9"
+        nisclient.vm.network "private_network", ip: "192.168.56.84"
+    config.vm.provider "virtualbox" do |v|
+        v.memory = 512
+        v.cpus = 1
+     end
+  end
+
+
+  config.vm.define "kmaster" do |kmaster|
+    kmaster.vm.box = "ubuntu/focal64"
+        kmaster.vm.network "private_network", ip: "192.168.56.84"
+    config.vm.provider "virtualbox" do |v|
+        v.memory = 2048 
+        v.cpus = 2
+     end
+  end
+
+  config.vm.define "kworker01" do |kworker01|
+    kworker01.vm.box = "ubuntu/focal64"
+        kworker01.vm.network "private_network", ip: "192.168.56.85"
+    config.vm.provider "virtualbox" do |v|
+        v.memory = 2048 
+        v.cpus = 1
+     end
+  end
+
+  config.vm.define "kworker02" do |kworker02|
+    kworker02.vm.box = "ubuntu/focal64"
+        kworker02.vm.network "private_network", ip: "192.168.56.86"
+    config.vm.provider "virtualbox" do |v|
+        v.memory = 2048 
+        v.cpus = 1
+     end
+  end
+
+  config.vm.define "kworker03" do |kworker03|
+    kworker03.vm.box = "ubuntu/focal64"
+        kworker03.vm.network "private_network", ip: "192.168.56.87"
+    config.vm.provider "virtualbox" do |v|
+        v.memory = 2048 
+        v.cpus = 1
+     end
+  end
+
+
+
+end
